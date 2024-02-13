@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ProductsService } from '../services/products.service';
 import { Product, Products } from '../../types';
 import { ProductComponent } from "../components/product/product.component";
 import { CommonModule } from '@angular/common';
-import { PaginatorModule } from 'primeng/paginator';
+import { Paginator, PaginatorModule } from 'primeng/paginator';
 
 
 @Component({
@@ -16,6 +16,9 @@ import { PaginatorModule } from 'primeng/paginator';
 export class HomeComponent {
   constructor(private productsService: ProductsService) {}
 
+  @ViewChild('paginator') paginator: Paginator | undefined;
+
+
   products: Product[] = []
   totalRecords: number = 0;
   rows: number = 5;
@@ -23,6 +26,10 @@ export class HomeComponent {
   onProductOutput(product: Product){
     console.log(product)
    }
+
+   resetPaginator() {
+    this.paginator?.changePage(0);
+  }
 
 
   onPageChange(event: any) {
@@ -37,6 +44,51 @@ export class HomeComponent {
           this.totalRecords = data.total;
 
 
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
+
+  editProduct(product: Product, id: number) {
+    this.productsService
+      .editProduct(`http://localhost:3000/clothes/${id}`, product)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+          this.resetPaginator();
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
+
+  deleteProduct(id: number) {
+    this.productsService
+      .deleteProduct(`http://localhost:3000/clothes/${id}`)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+          this.resetPaginator();
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
+
+  addProduct(product: Product) {
+    this.productsService
+      .addProduct(`http://localhost:3000/clothes`, product)
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.fetchProducts(0, this.rows);
+          this.resetPaginator();
         },
         error: (error) => {
           console.log(error);
