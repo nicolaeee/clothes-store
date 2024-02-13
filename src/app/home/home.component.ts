@@ -18,7 +18,7 @@ export class HomeComponent {
 
   products: Product[] = []
   totalRecords: number = 0;
-  rows: number = 12;
+  rows: number = 5;
 
   onProductOutput(product: Product){
     console.log(product)
@@ -34,6 +34,8 @@ export class HomeComponent {
       .subscribe({
         next: (data: Products) => {
           this.products = data.items;
+          this.totalRecords = data.total;
+
 
         },
         error: (error) => {
