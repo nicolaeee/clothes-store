@@ -18,7 +18,6 @@ export class EditPopupComponent {
 
   @Input() display: boolean = false;
   @Output() displayChange = new EventEmitter<boolean>();
-
   @Input() header!: string;
 
   @Input() product: Product = {
